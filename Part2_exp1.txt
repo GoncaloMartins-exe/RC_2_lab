@@ -30,4 +30,52 @@ No TUX3: sudo ifconfig if_e1 192.168.10.1 netmask 255.255.255.0 up
 No TUX4: sudo ifconfig if_e1 192.168.10.2 netmask 255.255.255.0 up
 Por fim deu se ping ao ip no 4 para o 3 (10.227.20.43) ou do 3 para o 4 com (10.227.20.44).
 
-O MAC address do tux 43 é 8c:90:2d:fd:a5:fb e o MAC address do tux 44 é ec:75:0c:c2:51:49.
+3- O MAC address do tux 43 é 8c:90:2d:fd:a5:fb e o MAC address do tux 44 é ec:75:0c:c2:51:49.
+
+4- Fois corrido o comando ping e funcionou
+
+
+$ route -n
+
+Kernel IP routing table
+Destination         Gateway         Genmask         Flags   Metric  Ref     Use Iface
+0.0.0.0             10.227.20.254   0.0.0.0         using   100     0       0   if_mng
+10.227.20.0         0.0.0.0         255.255.255.0   U       100     0       0   if_mng
+192.168.10.0        0.0.0.0         255.255.255.0   U       0       0       0   if_e1
+
+$ arp -a
+
+Address             HWtype          HWaddress           Flags   Mask    Iface
+10.227.20.223       ether           bc:24:11:f8:0d:71   C               if_mng
+192.168.10.2                        (incomplete)                        if_e1
+10.227.20.3         ether           bc:24:11:e7:5e:5b   C               if_mng
+10.227.20.44        ether           5c:f9:dd:70:aa:00   C               if_mng
+10.227.20.254       ether           e4:8d:8c:20:25:c8   C               if_mng
+10.227.20.2         ether           bc:24:11:f5:a2:54   C               if_mng
+
+6- arp -d -a
+
+Do 7 ao 10 foram efetuados.
+
+
+Questions
+» What are the ARP packets and what are they used for?
+
+
+» What are the MAC and IP addresses of ARP packets and why?
+
+
+» What packets does the ping command generate?
+
+
+» What are the MAC and IP addresses of the ping packets?
+
+
+» How to determine if a receiving Ethernet frame is ARP, IP, ICMP?
+
+
+» How to determine the length of a receiving frame?
+
+
+» What is the loopback interface and why is it important?
+
