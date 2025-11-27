@@ -1,0 +1,33 @@
+1. Connect E1 of tuxY3 and E1 of tuxY4 to the switch
+2. Configure if_e1 interface of tuxY3 and if_e1 interface of tuxY4 using ifconfig
+3. Write down the IP and MAC addresses of the network interfaces
+4. Use ping command to verify connectivity between these computers
+5. Inspect forwarding (route -n) and ARP (arp -a) tables
+6. Delete ARP table entries in tuxY3 (arp -d ipaddress)
+7. Start Wireshark in tuxY3.if_e1 and start capturing packets
+8. In tuxY3, ping tuxY4 for a few seconds
+9. Stop capturing packets
+10. Save the log and study it at home
+
+
+1- Conectei as portas TUX43E1 e TUX44E1
+2- Corri o comando sudo su no TUX e corri o comando ifconfig
+
+No if config apareceu:
+
+if_e1: flags=4163<UP,BROADCAST,RUNNIG,MULTICAST> mtu 1500
+        ether 8c:90:2d:fd:a5:fb txqueuelen 1000 (Ethernet)
+        RX packets 2580 bytes 256744 (250.7 KiB)
+        RX errors 0 dropped 69 overruns 0 frame 0
+        TX packets 366 bytes 69359 (67.7 KiB)
+
+if_e1: flags=4163<UP,BROADCAST,RUNNIG,MULTICAST> mtu 1500
+        inet6 fe80::ee75:cff:fec:5149 prefixlen 64 scopeid 0x20<link>
+        ether ec:75:0c:c2:51:49 txqueuelen 1000 (Ethernet)
+
+-Executou-se os comandos:
+No TUX3: sudo ifconfig if_e1 192.168.10.1 netmask 255.255.255.0 up
+No TUX4: sudo ifconfig if_e1 192.168.10.2 netmask 255.255.255.0 up
+Por fim deu se ping ao ip no 4 para o 3 (10.227.20.43) ou do 3 para o 4 com (10.227.20.44).
+
+O MAC address do tux 43 é 8c:90:2d:fd:a5:fb e o MAC address do tux 44 é ec:75:0c:c2:51:49.
