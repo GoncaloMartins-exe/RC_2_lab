@@ -60,7 +60,9 @@ Do 7 ao 10 foram efetuados.
 
 Questions
 » What are the ARP packets and what are they used for?
-
+ARP significa Address Resolution Protocol e serve para mapear um endereço IP para um endereço MAC dentro de uma LAN (mesma rede local).
+Quando um dispositivo precisa enviar um pacote IP para um outro dispositivo na LAN ele conhece o endereço IP mas não o MAC address para 
+puder criar o frame ethernet e aí é que o ARP é usado para obter o endereço MAC.
 
 » What are the MAC and IP addresses of ARP packets and why?
 
