@@ -65,7 +65,8 @@ Quando um dispositivo precisa enviar um pacote IP para um outro dispositivo na L
 puder criar o frame ethernet e aí é que o ARP é usado para obter o endereço MAC.
 
 » What are the MAC and IP addresses of ARP packets and why?
-
+Os pacotes do ARP têm dois tipos, o de solicitação e de resposta. 
+O de solicitação é quando MAC de origem envia uma solicitação o que permite identificar quem está a perguntar. O IP de origem 
 
 » What packets does the ping command generate?
 
@@ -80,4 +81,3 @@ puder criar o frame ethernet e aí é que o ARP é usado para obter o endereço 
 
 
 » What is the loopback interface and why is it important?
-
