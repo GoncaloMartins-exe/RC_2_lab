@@ -10,24 +10,23 @@
 10. Save the log and study it at home
 
 
-1- Conectei as portas TUX43E1 e TUX44E1
+1- Conectei as portas TUX43E1(24) e TUX44E1(22)
 2- Corri o comando sudo su no TUX e corri o comando ifconfig
 
-No if config apareceu:
+No ifconfig apareceu:
 
+--TUX3
 if_e1: flags=4163<UP,BROADCAST,RUNNIG,MULTICAST> mtu 1500
+        inet 172.16.40.1 netmask 255.255.255.0 broadcast 172.16.40.255
         ether 8c:90:2d:fd:a5:fb txqueuelen 1000 (Ethernet)
-        RX packets 2580 bytes 256744 (250.7 KiB)
-        RX errors 0 dropped 69 overruns 0 frame 0
-        TX packets 366 bytes 69359 (67.7 KiB)
 
+--TUX4
 if_e1: flags=4163<UP,BROADCAST,RUNNIG,MULTICAST> mtu 1500
-        inet6 fe80::ee75:cff:fec:5149 prefixlen 64 scopeid 0x20<link>
         ether ec:75:0c:c2:51:49 txqueuelen 1000 (Ethernet)
 
 -Executou-se os comandos:
-No TUX3: sudo ifconfig if_e1 192.168.10.1 netmask 255.255.255.0 up
-No TUX4: sudo ifconfig if_e1 192.168.10.2 netmask 255.255.255.0 up
+No TUX3: sudo ifconfig if_e1 172.16.40.1/24
+No TUX4: sudo ifconfig if_e1 172.16.40.254/24
 Por fim deu se ping ao ip no 4 para o 3 (10.227.20.43) ou do 3 para o 4 com (10.227.20.44).
 
 3- O MAC address do tux 43 é 8c:90:2d:fd:a5:fb e o MAC address do tux 44 é ec:75:0c:c2:51:49.
@@ -41,19 +40,25 @@ Kernel IP routing table
 Destination         Gateway         Genmask         Flags   Metric  Ref     Use Iface
 0.0.0.0             10.227.20.254   0.0.0.0         using   100     0       0   if_mng
 10.227.20.0         0.0.0.0         255.255.255.0   U       100     0       0   if_mng
-192.168.10.0        0.0.0.0         255.255.255.0   U       0       0       0   if_e1
+172.16.40.0         0.0.0.0         255.255.255.0   U       0       0       0   if_e1
 
+-- Antes do Ping:
 $ arp -a
 
-Address             HWtype          HWaddress           Flags   Mask    Iface
-10.227.20.223       ether           bc:24:11:f8:0d:71   C               if_mng
-192.168.10.2                        (incomplete)                        if_e1
-10.227.20.3         ether           bc:24:11:e7:5e:5b   C               if_mng
-10.227.20.44        ether           5c:f9:dd:70:aa:00   C               if_mng
-10.227.20.254       ether           e4:8d:8c:20:25:c8   C               if_mng
-10.227.20.2         ether           bc:24:11:f5:a2:54   C               if_mng
-
+Domain               Address             HWaddress           Iface
+_gateway             (10.227.20.254)     e4:8d:8c:20:25:c8   if_mng
+fog.netlab.fe.up.pt  (10.227.20.223)     bc:24:11:f8:0d:71   if_mng
+dns.netlab.fe.up.pt  (10.227.20.2)       bc:24:11:f5:a2:54   if_mng
+ns1.netlab.fe.up.pt  (10.227.20.3)       bc:24:11:e7:5e:5b   if_mng
 6- arp -d -a
+
+-- Depois do Ping:
+Domain               Address             HWaddress           Iface
+?                    (172.18.40.254)     ec:75:0c:c2:51:49   if_e1
+_gateway             (10.227.20.254)     e4:8d:8c:20:25:c8   if_mng
+fog.netlab.fe.up.pt  (10.227.20.223)     bc:24:11:f8:0d:71   if_mng
+dns.netlab.fe.up.pt  (10.227.20.2)       bc:24:11:f5:a2:54   if_mng
+ns1.netlab.fe.up.pt  (10.227.20.3)       bc:24:11:e7:5e:5b   if_mng
 
 Do 7 ao 10 foram efetuados.
 

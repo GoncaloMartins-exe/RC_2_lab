@@ -1,0 +1,37 @@
+1. Connect and configure E1 of tuxY2 and write down its IP and MAC addresses
+2. Create two bridges in the switch: bridgeY0 and bridgeY1
+3. Remove the ports where tuxY3, tuxY4 and tuxY2 are connected from the default
+bridge (bridge) and add them the corresponding ports to bridgeY0 and bridgeY1
+4. Start the capture at tuxY3.if_e1
+5. In tuxY3, ping tuxY4 and then ping tuxY2
+6. Stop the capture and save the log
+7. Start new captures in tuxY2.if_e1, tuxY3.if_e1, tuxY4.if_e1
+8. In tuxY3, do ping broadcast (ping -b 172.16.Y0.255) for a few seconds
+9. Observe the results, stop the captures and save the logs
+10. Repeat steps 7, 8 and 9, but now do
+➢ ping broadcast in tuxY2 (ping -b 172.16.Y1.255)
+
+1- Conectei o cabo TUX42E1 a porta 20 do switch
+2- We started GTK and entered the following commands:
+
+[admin@MikroTik] > interface bridge add name=bridge40
+[admin@MikroTik] > interface bridge add name=bridge41
+
+3- 
+
+[admin@MikroTik] > interface bridge port remove [find interface =ether20]
+[admin@MikroTik] > interface bridge port remove [find interface =ether22]
+[admin@MikroTik] > interface bridge port remove [find interface =ether24]
+
+[admin@MikroTik] > interface bridge port add bridge=bridge41 interface=ether20
+[admin@MikroTik] > interface bridge port add bridge=bridge40 interface=ether22
+[admin@MikroTik] > interface bridge port add bridge=bridge40 interface=ether24
+
+4- 
+
+
+5- 
+
+
+
+
