@@ -74,15 +74,22 @@ Os pacotes do ARP têm dois tipos, o de solicitação e de resposta.
 O de solicitação é quando MAC de origem envia uma solicitação o que permite identificar quem está a perguntar. O IP de origem 
 
 » What packets does the ping command generate?
-
+Gera pacotes ICMP que significa Internet Control Message Protocol com dois tipos de envios, o reply pela máquina que responde e 
+request pela máquina que faz o ping e estes pacotes são enviados dentro de pacotes IP que por sua vez são enviados dentro de frames Ethernet.
 
 » What are the MAC and IP addresses of the ping packets?
-
+Na experiência fizemos Tux3->ping->Tux4 e para isso foi necessário conter no frame Ethernet o MAC do TUX3(source) e do TUX4(destination),
+o IP de ambos no pacote IP e a mensagem ICMP do tipo Request, do lado do Tux4 inverte o destino com a fonte assim como o tipo Reply.
 
 » How to determine if a receiving Ethernet frame is ARP, IP, ICMP?
-
+Na camada 2 que é ao nível da ethernet verificamos o campo EtherType no header em que temos ARP(0x0806), IPv4(0x0800) e IPv6(0x86DD), caso
+for IPv4(0x0800) então é um frame IP senão se for ARP(0x0806) é um frame ARP.
+Na camada 3 no campo Protocol do IPv4 temos ICMP(1), TCP(6), UDP(17) e da mesma forma se o campo for 1 então é um frame ICMP.
 
 » How to determine the length of a receiving frame?
-
+Existem os campos de tamanho e tipo num frame de Ethernet, no Wireshark na coluna Length tem o tamanho total do frame.
 
 » What is the loopback interface and why is it important?
+O loopback interface é software, por isso não depende de nenhuma conexão física como um router, switch ou cabo. Isto permite que o computador
+"fale" com ele mesmo para por exemplo verificar se os serviços locais iniciaram. Esses serviços internos dependem do loopback por ser independente
+da rede exterior o que evita o tráfego tornando-se mais rápido. Não tem ARP porque não existe endereço MAC.
