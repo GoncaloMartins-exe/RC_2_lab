@@ -33,16 +33,21 @@ ________________________________________________________________________________
 
 Questions
 » What routes are there in the tuxes? What are their meaning?
-
+Cada tux tem uma rtoa para a sua sub-rede e uma rota default apontada ao tuxY4, permitindo
+encaminhar tráfego entre Y0 e Y1.
 
 » What information does an entry of the forwarding table contain?
-
+Cada entrada indica o destino, gateway e interface de saída o que define por onde o kernel
+envia cada pacote.
 
 » What ARP messages, and associated MAC addresses, are observed and why?
-
+As mensagens ARP observadas são ARP requests e replies que têm associados os MAC do gateway
+e do host destino em cada LAN, uma vez que ARP só funciona dentro de cada rede local.
 
 » What ICMP packets are observed and why?
-
+Vê-se Echo Request e Echo Reply porque o ping usa ICMP para testar conectividade entre redes
+através do router.
 
 » What are the IP and MAC addresses associated to ICMP packets and why? 
-
+Os indereços IP permanecem iguais end-to-end, mas os MAC mudam em cada salto porque cada
+segmento Ethernet tem o seu próprio salto distinto.
