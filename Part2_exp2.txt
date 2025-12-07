@@ -19,24 +19,44 @@ bridge (bridge) and add them the corresponding ports to bridgeY0 and bridgeY1
 
 3- 
 
-[admin@MikroTik] > interface bridge port remove [find interface =ether20]
-[admin@MikroTik] > interface bridge port remove [find interface =ether22]
-[admin@MikroTik] > interface bridge port remove [find interface =ether24]
+[admin@MikroTik] > interface bridge port remove [find interface = ether20]
+[admin@MikroTik] > interface bridge port remove [find interface = ether22]
+[admin@MikroTik] > interface bridge port remove [find interface = ether24]
 
 [admin@MikroTik] > interface bridge port add bridge=bridge41 interface=ether20
 [admin@MikroTik] > interface bridge port add bridge=bridge40 interface=ether22
 [admin@MikroTik] > interface bridge port add bridge=bridge40 interface=ether24
 
-4- 
+4- Abriu se o wireshark no tux 3 no if_e1.
+
+5- ping 172.16.40.254
+
+6- O log foi guardado com o nome "Wireshark exp2".
 
 
-5- 
 
-
-
+________________________________________________________________________________________
 
 Questions
 » How to configure bridgeY0?
 
+Para configurar uma bridgeY0 primeiro cria-se através de:
+$ interface bridge add name=bridgeY0
+
+Depois remove-se da bridge default as portas necessárias:
+$ interface bridge port remove [find interface = etherX]
+$ interface bridge port remove [find interface = etherZ]
+
+Por fim adiciona-se as portas à bridge criada:
+$ interface bridge port add bridge=bridgeY0 interface=etherX
+$ interface bridge port add bridge=bridgeY0 interface=etherZ
 
 » How many broadcast domains are there? How can you conclude it from the logs?
+
+Na experiência criamos duas bridges separadas e cada uma é um broadcast domain independente,
+por isso 2 broadcast domains.
+Nos logs basta fazer ping -b num host numa bridge, apenas as máquinas que pertencem à bridge
+recebem o broadcast enquanto que a outra bridge não recebe nada. Quando se fez o ping
+verificou-se que o TUX4 aparecia nas capturas do TUX3. No TUX2 quando se faz o mesmo processo
+não apresenta os TUX3 e TUX4 por pertencerem à bridgeY0 e o presente na bridgeY1.
+Caso aparecessem em ambos os logs indicaria que era tudo um só domínio.
