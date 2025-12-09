@@ -7,6 +7,21 @@
 Wireshark
 
 
+DNS do lab:
+services.netlab.fe.up.pt  →  10.227.20.3
+
+sudo nano /etc/resolv.conf
+
+colocar dentro do ficheiro:
+nameserver 10.227.20.3
+
+caso subscreva o ficheiro:
+sudo chattr +i /etc/resolv.conf
+
+ping services.netlab.fe.up.pt
+ping ftp.netlab.fe.up.pt
+ping google.com
+
 ________________________________________________________________________________________
 
 Questions
