@@ -37,71 +37,53 @@ what happens
 
 
 
-tuxY2       : 172.16.Y1.253   /24
-tuxY3       : 172.16.Y0.1     /24
-tuxY4       : 172.16.Y0.254   /24
-Rc ether2   : 172.16.Y1.254   /24
-FTP         : 172.16.1.10
 
-Comandos:
-/ip addresses add address=10.227.20.254/24 interface=ether1     (ether1)
-/ip route add gateway=10.227.20.1                               (Tux3)
-/ip route add dst-address=172.16.Y1.254/24 interface=ether2     (ether2)
-/ip route add dst-address=172.16.Y0.0/24 gateway=172.16.Y1.253  (Tux4)
 
-____________________________________________________________________________
-Ativar NAT:
-/ip firewall nat add chain=srcnat out-interface=ether1 action=masquerade
-Desativar NAT:
-/ip firewall nat remove [find chain=srcnat]
 
-____________________________________________________________________________
-Adicionar as rotas entre dispositivos:
+ether2 - 32e1
+ether3 - 33e1
+ether4 - 34e1
+ether8 - 34e2
+ether24- RCe2
 
-sudo su
 
-TuxY3:
-ip route add 172.16.Y1.0/24 via 172.16.Y0.254
-ip route add 172.16.1.0/24 via 172.16.Y0.254
+Inicialmente ligou-se o router ao switch, o tux2, 3 e 4 ao ether2, 3 e 4 respetivamente.
 
-TuxY4:
-ip route add 172.16.1.0/24 via 172.16.Y1.254
+Depois executou-se os comandos (no Mikrotik):
+/ip addresses add address=172.16.1.Y1/24 interface=ether1     (ether1)
+/ip addresses add address=172.16.Y1.254/24 interface=ether2     (ether2)
 
-TuxY2:
-ip route add 172.16.Y0.0/24 via 172.16.Y1.254
-ip route add 172.16.1.0/24 via 172.16.Y1.254
+Tux 3:
+route add -net 172.16.1.0/24 gw 172.16.30.254
+route add -net 172.16.31.0/24 gw 172.16.30.254
 
-quando pede para trocar as rotas: 
-ip route replace 172.16.Y0.0/24 via 172.16.Y1.254
+Tux 4:
+route add -net 172.16.1.0/24 gw 172.16.31.254
 
-pede novamente para trocar:
-ip route replace 172.16.Y0.0/24 via 172.16.Y1.253
+Tux 2:
+route add -net 172.16.1.0/24 gw 172.16.31.254
+route add -net 172.16.31./24 gw 172.16.30.254
+route add -net 172.16.30.0/24 gw 172.16.31.253
 
-DESATIVAR ICMP redirects:
 sudo sysctl net.ipv4.conf.all.accept_redirects=0
-sudo sysctl net.ipv4.conf.eth0.accept_redirects=0
+sudo sysctl net.ipv4.conf.if_e1.accept_redirects=0
 
-ATIVAR ICMP redirects:
+route del -net 172.16.30.0/24
+route add -net 172.16.30.0/24 gw 172.16.31.254
+
 sudo sysctl net.ipv4.conf.all.accept_redirects=1
-sudo sysctl net.ipv4.conf.eth0.accept_redirects=1
+sudo sysctl net.ipv4.conf.if_e1.accept_redirects=1
 
+Agora faz apenas um redirect e depois já sabe o caminho a percorrer.
 
-Pings:
-ping 172.16.Y0.1
-ping 172.16.Y1.253
-ping 172.16.Y1.254
-ping 172.16.1.10
+Depois de fazer ping ao server, verifica-se que funciona
 
-traceroute 172.16.Y0.1
-
-Sem NAT:
-ping 172.16.1.10
+/ip firewall nat disable 0
 
 ________________________________________________________________________________________
 
 Questions
 » How to configure a static route in a commercial router?
-
 
 » What are the paths followed by the packets, with and without ICMP redirect
 enabled, in the experiments carried out and why?
