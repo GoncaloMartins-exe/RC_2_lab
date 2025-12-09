@@ -1,6 +1,5 @@
-1. Connect ether1 of RC
-to the lab network on PY.12 (with NAT enabled by
-default) and ether2 of RC to a port on bridgeY1. Configure the IP addresses of
+1. Connect ether1 of RC to the lab network on PY.12 (with NAT enabled by default) 
+and ether2 of RC to a port on bridgeY1. Configure the IP addresses of
 RC through the router serial console
 
 2. Verify routes and add if necessary:
@@ -38,8 +37,65 @@ what happens
 
 
 
+tuxY2       : 172.16.Y1.253   /24
+tuxY3       : 172.16.Y0.1     /24
+tuxY4       : 172.16.Y0.254   /24
+Rc ether2   : 172.16.Y1.254   /24
+FTP         : 172.16.1.10
+
+Comandos:
+/ip addresses add address=10.227.20.254/24 interface=ether1     (ether1)
+/ip route add gateway=10.227.20.1                               (Tux3)
+/ip route add dst-address=172.16.Y1.254/24 interface=ether2     (ether2)
+/ip route add dst-address=172.16.Y0.0/24 gateway=172.16.Y1.253  (Tux4)
+
+____________________________________________________________________________
+Ativar NAT:
+/ip firewall nat add chain=srcnat out-interface=ether1 action=masquerade
+Desativar NAT:
+/ip firewall nat remove [find chain=srcnat]
+
+____________________________________________________________________________
+Adicionar as rotas entre dispositivos:
+
+sudo su
+
+TuxY3:
+ip route add 172.16.Y1.0/24 via 172.16.Y0.254
+ip route add 172.16.1.0/24 via 172.16.Y0.254
+
+TuxY4:
+ip route add 172.16.1.0/24 via 172.16.Y1.254
+
+TuxY2:
+ip route add 172.16.Y0.0/24 via 172.16.Y1.254
+ip route add 172.16.1.0/24 via 172.16.Y1.254
+
+quando pede para trocar as rotas: 
+ip route replace 172.16.Y0.0/24 via 172.16.Y1.254
+
+pede novamente para trocar:
+ip route replace 172.16.Y0.0/24 via 172.16.Y1.253
+
+DESATIVAR ICMP redirects:
+sudo sysctl net.ipv4.conf.all.accept_redirects=0
+sudo sysctl net.ipv4.conf.eth0.accept_redirects=0
+
+ATIVAR ICMP redirects:
+sudo sysctl net.ipv4.conf.all.accept_redirects=1
+sudo sysctl net.ipv4.conf.eth0.accept_redirects=1
 
 
+Pings:
+ping 172.16.Y0.1
+ping 172.16.Y1.253
+ping 172.16.Y1.254
+ping 172.16.1.10
+
+traceroute 172.16.Y0.1
+
+Sem NAT:
+ping 172.16.1.10
 
 ________________________________________________________________________________________
 
