@@ -8,7 +8,7 @@ BIN_DIR = bin
 OBJ_DIR = obj
 
 # Target executable
-TARGET = $(BIN_DIR)/app
+TARGET = $(BIN_DIR)/download
 
 # Source files
 SRCS = $(wildcard $(SRC_DIR)/*.c)

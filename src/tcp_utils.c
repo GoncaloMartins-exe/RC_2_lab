@@ -72,3 +72,28 @@ int recv_line(int sockfd, char *buffer, size_t maxlen) {
     buffer[pos] = '\0';
     return pos;
 }
+
+// -----------------------------------------------------
+
+int recv_ftp_response(int sockfd, char *buf, size_t buflen) {
+    char line[1024];
+    int code = 0;
+
+    while (1) {
+        if (recv_line(sockfd, line, sizeof(line)) <= 0)
+            return -1;
+
+        printf("FTP: %s", line);
+
+        if (code == 0) {
+            code = atoi(line);  // first 3 digits
+        }
+
+        // Multi-line responses have '-' after code
+        if (line[3] == ' ')
+            break;  // final line
+    }
+
+    return code;
+}
+

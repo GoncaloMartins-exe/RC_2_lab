@@ -38,19 +38,24 @@ int main(int argc, char *argv[]) {
 
     // Receive FTP welcome line
     char line[1024];
-    recv_line(sockfd, line, sizeof(line));
+    recv_ftp_response(sockfd, line, sizeof(line));
     printf("FTP: %s", line);
 
     // Authenticate
     char cmd[256];
     snprintf(cmd, sizeof(cmd), "USER %s\r\n", url.user);
     send_all(sockfd, cmd, strlen(cmd));
-    recv_line(sockfd, line, sizeof(line));
+    recv_ftp_response(sockfd, line, sizeof(line));
     printf("FTP: %s", line);
 
     snprintf(cmd, sizeof(cmd), "PASS %s\r\n", url.password);
     send_all(sockfd, cmd, strlen(cmd));
-    recv_line(sockfd, line, sizeof(line));
+    recv_ftp_response(sockfd, line, sizeof(line));
+    printf("FTP: %s", line);
+
+    // Entrar no modo Passive
+    send_all(sockfd, "PASV\r\n", 6);
+    recv_ftp_response(sockfd, line, sizeof(line));
     printf("FTP: %s", line);
 
     close(sockfd);
