@@ -30,6 +30,6 @@ int recv_ftp_response(int sockfd, char *buf, size_t buflen);
 int enter_passive_mode(int sockfd, char *ip_out, int *port_out);
 
 // Fazer download de um ficheiro pela data socket
-int download_file(int sockfd_data, const char *local_path);
+int download_file(int sockfd_data, const char *local_path, size_t total_size);
 
 #endif

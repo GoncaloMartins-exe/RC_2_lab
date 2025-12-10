@@ -131,7 +131,7 @@ int enter_passive_mode(int sockfd, char *ip_out, int *port_out) {
     return 0;
 }
 
-int download_file(int sockfd_data, const char *local_path) {
+int download_file(int sockfd_data, const char *local_path, size_t total_size) {
     FILE *fp = fopen(local_path, "wb");
     if (!fp) {
         perror("fopen");
@@ -140,12 +140,25 @@ int download_file(int sockfd_data, const char *local_path) {
 
     char buffer[4096];
     ssize_t n;
+    size_t downloaded = 0;
+    int last_percent = -1;
 
     while ((n = recv(sockfd_data, buffer, sizeof(buffer), 0)) > 0) {
         if (fwrite(buffer, 1, n, fp) != (size_t)n) {
             perror("fwrite");
             fclose(fp);
             return -1;
+        }
+
+        downloaded += n;
+
+        if (total_size > 0) { // only if we know total size
+            int percent = (int)(downloaded * 100 / total_size);
+            if (percent != last_percent) {
+                last_percent = percent;
+                printf("\rDownloading: %d%%", percent);
+                fflush(stdout);
+            }
         }
     }
 
@@ -154,6 +167,11 @@ int download_file(int sockfd_data, const char *local_path) {
         fclose(fp);
         return -1;
     }
+
+    if (total_size > 0)
+        printf("\rDownload complete: 100%%\n");
+    else
+        printf("\nDownload complete\n");
 
     fclose(fp);
     return 0;

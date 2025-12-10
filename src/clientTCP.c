@@ -76,8 +76,18 @@ int main(int argc, char *argv[]) {
     send_all(sockfd, cmd, strlen(cmd));
     recv_ftp_response(sockfd, line, sizeof(line));
     
+    // Calcular tamanho total para a barra de progresso
+    size_t total_size = 0;
+    char *start = strchr(line, '(');
+    char *end = strchr(line, ')');
+    if (start && end && end > start) {
+        *end = '\0';          // terminate string at ')'
+        total_size = strtoull(start + 1, NULL, 10);
+        printf("File size: %zu bytes\n", total_size);
+    }
+
     // Fazer download do ficheiro
-    if (download_file(data_sock, url.file) != 0) {
+    if (download_file(data_sock, url.file, total_size) != 0) {
         fprintf(stderr, "Failed to download file\n");
         close(data_sock);
         close(sockfd);
