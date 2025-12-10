@@ -63,8 +63,7 @@ int recv_line(int sockfd, char *buffer, size_t maxlen) {
         if (n <= 0) return -1;
 
         buffer[pos++] = c;
-
-        if (c == '\r') continue;
+        
         if (c == '\n')break;
     }
 

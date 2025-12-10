@@ -86,8 +86,11 @@ int main(int argc, char *argv[]) {
         printf("File size: %zu bytes\n", total_size);
     }
 
+    char path[MAX_LENGTH+10];
+    snprintf(path, sizeof(path), "Downloads/%s", url.file);
+
     // Fazer download do ficheiro
-    if (download_file(data_sock, url.file, total_size) != 0) {
+    if (download_file(data_sock, path, total_size) != 0) {
         fprintf(stderr, "Failed to download file\n");
         close(data_sock);
         close(sockfd);

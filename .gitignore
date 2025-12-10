@@ -11,5 +11,7 @@ obj/
 *.swp
 *~
 
+Downloads/*
+
 .DS_Store
 Thumbs.db
