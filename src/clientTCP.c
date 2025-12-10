@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
     recv_ftp_response(sockfd, line, sizeof(line));
 
     // Fazer login
-    char cmd[256];
+    char cmd[1024];
     snprintf(cmd, sizeof(cmd), "USER %s\r\n", url.user);
     send_all(sockfd, cmd, strlen(cmd));
     recv_ftp_response(sockfd, line, sizeof(line));
