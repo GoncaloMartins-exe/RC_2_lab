@@ -1,42 +1,24 @@
-/**
- * Example code for getting the IP address from hostname.
- * tidy up includes
- */
-#include <stdio.h>
-#include <stdlib.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include<arpa/inet.h>
+#include "include/getip.h"
 
-int main(int argc, char *argv[]) {
+int resolve_hostname(const char *hostname, char *ip_str, size_t maxlen) {
     struct hostent *h;
+    char *host_address;
 
-    if (argc != 2) {
-        fprintf(stderr, "Usage: %s <address to get IP address>\n", argv[0]);
-        exit(-1);
+    if ((h = gethostbyname(hostname)) == NULL) {
+        herror("gethostbyname");
+        return -1;
     }
 
-/**
- * The struct hostent (host entry) with its terms documented
+    host_address = h->h_addr_list[0];
 
-    struct hostent {
-        char *h_name;    // Official name of the host.
-        char **h_aliases;    // A NULL-terminated array of alternate names for the host.
-        int h_addrtype;    // The type of address being returned; usually AF_INET.
-        int h_length;    // The length of the address in bytes.
-        char **h_addr_list;    // A zero-terminated array of network addresses for the host.
-        // Host addresses are in Network Byte Order.
-    };
+    // Convert binary address to string
+    struct in_addr *addr = (struct in_addr *) host_address;
+    const char *result = inet_ntoa(*addr);
 
-    #define h_addr h_addr_list[0]	The first address in h_addr_list.
-*/
-    if ((h = gethostbyname(argv[1])) == NULL) {
-        herror("gethostbyname()");
-        exit(-1);
-    }
+    if (!result) return -1;
 
-    printf("Host name  : %s\n", h->h_name);
-    printf("IP Address : %s\n", inet_ntoa(*((struct in_addr *) h->h_addr)));
+    strncpy(ip_str, result, maxlen - 1);
+    ip_str[maxlen - 1] = '\0';
 
     return 0;
 }
