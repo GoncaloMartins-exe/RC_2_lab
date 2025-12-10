@@ -1,18 +1,35 @@
-/**      (C)2000-2021 FEUP
- *       tidy up some includes and parameters
- * */
-
 #include "url_parser.h"
 #include "getip.h"
 #include "tcp_utils.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
+void ensure_downloads_dir() {
+    struct stat st = {0};
+
+    // Check if "Downloads" exists
+    if (stat("Downloads", &st) == -1) {
+        // Try to create it
+        if (mkdir("Downloads", 0755) != 0) {
+            if (errno != EEXIST) {
+                perror("mkdir Downloads");
+            }
+        } else {
+            printf("Created Downloads directory.\n");
+        }
+    }
+}
+
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {
         printf("Usage: %s ftp://<user>:<pass>@<host>/<path> or ftp://<host>/<path> \n", argv[0]);
         return 1;
     }
+
+    ensure_downloads_dir();
 
     ftp_url url;
     if (parse_ftp_url(argv[1], &url) != 0) {
