@@ -2,6 +2,13 @@
 #define TCP_UTILS_H
 
 #include <stddef.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <string.h>
+#include <stdio.h>
+
+#define SERVER_PORT 21
 
 // Abre a socket
 int connect_to_server(const char *ip_str, int port);

@@ -1,0 +1,15 @@
+bin/
+*.exe
+
+obj/
+*.o
+
+.vscode/
+
+*.log
+*.tmp
+*.swp
+*~
+
+.DS_Store
+Thumbs.db

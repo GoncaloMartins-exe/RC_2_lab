@@ -1,4 +1,4 @@
-#include "include/getip.h"
+#include "getip.h"
 
 int resolve_hostname(const char *hostname, char *ip_str, size_t maxlen) {
     struct hostent *h;

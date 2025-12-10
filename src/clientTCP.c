@@ -2,59 +2,57 @@
  *       tidy up some includes and parameters
  * */
 
+#include "url_parser.h"
+#include "getip.h"
+#include "tcp_utils.h"
 #include <stdio.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <stdlib.h>
-#include <unistd.h>
 
-#include <string.h>
-
-#define SERVER_PORT 6000
-#define SERVER_ADDR "192.168.28.96"
-
-int main(int argc, char **argv) {
-
-    if (argc > 1)
-        printf("**** No arguments needed. They will be ignored. Carrying ON.\n");
-    int sockfd;
-    struct sockaddr_in server_addr;
-    char buf[] = "Mensagem de teste na travessia da pilha TCP/IP\n";
-    size_t bytes;
-
-    /*server address handling*/
-    bzero((char *) &server_addr, sizeof(server_addr));
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_addr.s_addr = inet_addr(SERVER_ADDR);    /*32 bit Internet address network byte ordered*/
-    server_addr.sin_port = htons(SERVER_PORT);        /*server TCP port must be network byte ordered */
-
-    /*open a TCP socket*/
-    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        perror("socket()");
-        exit(-1);
-    }
-    /*connect to the server*/
-    if (connect(sockfd,
-                (struct sockaddr *) &server_addr,
-                sizeof(server_addr)) < 0) {
-        perror("connect()");
-        exit(-1);
-    }
-    /*send a string to the server*/
-    bytes = write(sockfd, buf, strlen(buf));
-    if (bytes > 0)
-        printf("Bytes escritos %ld\n", bytes);
-    else {
-        perror("write()");
-        exit(-1);
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        printf("Usage: %s ftp://<user>:<pass>@<host>/<path> or ftp://<host>/<path> \n", argv[0]);
+        return 1;
     }
 
-    if (close(sockfd)<0) {
-        perror("close()");
-        exit(-1);
+    ftp_url url;
+    if (parse_ftp_url(argv[1], &url) != 0) {
+        printf("Error parsing URL.\n");
+        return 1;
     }
+
+    printf("User: %s\n", url.user);
+    printf("Password: %s\n", url.password);
+    printf("Host: %s\n", url.host);
+    printf("Path: %s\n", url.path);
+
+    char ip[64];
+    if (resolve_hostname(url.host, ip, sizeof(ip)) != 0) {
+        printf("Could not resolve host.\n");
+        return 1;
+    }
+
+    printf("Resolved %s → %s\n", url.host, ip);
+
+    int sockfd = connect_to_server(ip, 21);
+    if (sockfd < 0) return 1;
+
+    // Receive FTP welcome line
+    char line[1024];
+    recv_line(sockfd, line, sizeof(line));
+    printf("FTP: %s", line);
+
+    // Authenticate
+    char cmd[256];
+    snprintf(cmd, sizeof(cmd), "USER %s\r\n", url.user);
+    send_all(sockfd, cmd, strlen(cmd));
+    recv_line(sockfd, line, sizeof(line));
+    printf("FTP: %s", line);
+
+    snprintf(cmd, sizeof(cmd), "PASS %s\r\n", url.password);
+    send_all(sockfd, cmd, strlen(cmd));
+    recv_line(sockfd, line, sizeof(line));
+    printf("FTP: %s", line);
+
+    close(sockfd);
     return 0;
 }
-
-
