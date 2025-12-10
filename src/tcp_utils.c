@@ -103,4 +103,30 @@ int recv_ftp_response(int sockfd, char *buf, size_t buflen) {
 }
 
 
+int enter_passive_mode(int sockfd, char *ip_out, int *port_out) {
+    char line[1024];
 
+    // Mandar commando PASV para entrar no modo Passive
+    if (send_all(sockfd, "PASV\r\n", 6) < 0) {
+        fprintf(stderr, "Failed to send PASV command\n");
+        return -1;
+    }
+    if (recv_ftp_response(sockfd, line, sizeof(line)) < 0) {
+        fprintf(stderr, "Failed to read PASV response\n");
+        return -1;
+    }
+
+    // Parse resposta 227
+    int h1,h2,h3,h4,p1,p2;
+    if (sscanf(line, "227 Entering Passive Mode (%d,%d,%d,%d,%d,%d)",
+               &h1,&h2,&h3,&h4,&p1,&p2) != 6) {
+        fprintf(stderr, "Failed to parse PASV response: %s\n", line);
+        return -1;
+    }
+
+    // Construir o IP e a Porta de saída dos dados
+    snprintf(ip_out, 64, "%d.%d.%d.%d", h1,h2,h3,h4);
+    *port_out = p1*256 + p2;
+
+    return 0;
+}

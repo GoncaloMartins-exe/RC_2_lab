@@ -51,8 +51,25 @@ int main(int argc, char *argv[]) {
     recv_ftp_response(sockfd, line, sizeof(line));
 
     // Entrar no modo Passive
-    send_all(sockfd, "PASV\r\n", 6);
-    recv_ftp_response(sockfd, line, sizeof(line));
+    char data_ip[64];
+    int data_port;
+
+    if (enter_passive_mode(sockfd, data_ip, &data_port) != 0) {
+        fprintf(stderr, "Failed to enter passive mode\n");
+        close(sockfd);
+        return 1;
+    }
+
+    printf("Data connection IP: %s\n", data_ip);
+    printf("Data connection port: %d\n", data_port);
+
+    // Conectar a socket de output de dados
+    int data_sock = connect_to_server(data_ip, data_port);
+    if (data_sock < 0) {
+        fprintf(stderr, "Failed to connect to data socket\n");
+        close(sockfd);
+        return 1;
+    }
 
     close(sockfd);
     return 0;
