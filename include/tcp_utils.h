@@ -8,8 +8,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
-#define SERVER_PORT 21
+#define FTP_PORT 21
 
 // Abre a socket
 int connect_to_server(const char *ip_str, int port);
@@ -22,5 +23,8 @@ int recv_line(int sockfd, char *buffer, size_t maxlen);
 
 // Da print em multiplas linhas da socket. (Util para respostas com mais de uma linha)
 int recv_ftp_response(int sockfd, char *buf, size_t buflen);
+
+// Função que lê os valores h1,h2,h3,h4,p1,p2 e entra no modo Passive
+int enter_passive_mode(int sockfd, char *ip_out, int *port_out);
 
 #endif

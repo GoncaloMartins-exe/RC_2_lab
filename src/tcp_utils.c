@@ -60,13 +60,12 @@ int recv_line(int sockfd, char *buffer, size_t maxlen) {
         char c;
         ssize_t n = recv(sockfd, &c, 1, 0);
 
-        if (n <= 0)
-            return -1;
+        if (n <= 0) return -1;
 
         buffer[pos++] = c;
 
-        if (c == '\n')
-            break;
+        if (c == '\r') continue;
+        if (c == '\n')break;
     }
 
     buffer[pos] = '\0';
@@ -80,13 +79,14 @@ int recv_ftp_response(int sockfd, char *buf, size_t buflen) {
     int code = 0;
 
     while (1) {
-        if (recv_line(sockfd, line, sizeof(line)) <= 0)
-            return -1;
+        if (recv_line(sockfd, line, sizeof(line)) <= 0) return -1;
+
+        if (strlen(line) == 0) continue;
 
         printf("FTP: %s", line);
 
         if (code == 0) {
-            code = atoi(line);  // first 3 digits
+            code = atoi(line); 
         }
 
         // Multi-line responses have '-' after code
@@ -94,6 +94,13 @@ int recv_ftp_response(int sockfd, char *buf, size_t buflen) {
             break;  // final line
     }
 
+    if (buf && buflen > 0) {
+        strncpy(buf, line, buflen - 1);
+        buf[buflen - 1] = '\0';
+    }
+
     return code;
 }
+
+
 

@@ -33,30 +33,26 @@ int main(int argc, char *argv[]) {
 
     printf("Resolved %s → %s\n", url.host, ip);
 
-    int sockfd = connect_to_server(ip, 21);
+    int sockfd = connect_to_server(ip, FTP_PORT);
     if (sockfd < 0) return 1;
 
     // Receive FTP welcome line
     char line[1024];
     recv_ftp_response(sockfd, line, sizeof(line));
-    printf("FTP: %s", line);
 
-    // Authenticate
+    // Fazer login
     char cmd[256];
     snprintf(cmd, sizeof(cmd), "USER %s\r\n", url.user);
     send_all(sockfd, cmd, strlen(cmd));
     recv_ftp_response(sockfd, line, sizeof(line));
-    printf("FTP: %s", line);
 
     snprintf(cmd, sizeof(cmd), "PASS %s\r\n", url.password);
     send_all(sockfd, cmd, strlen(cmd));
     recv_ftp_response(sockfd, line, sizeof(line));
-    printf("FTP: %s", line);
 
     // Entrar no modo Passive
     send_all(sockfd, "PASV\r\n", 6);
     recv_ftp_response(sockfd, line, sizeof(line));
-    printf("FTP: %s", line);
 
     close(sockfd);
     return 0;
