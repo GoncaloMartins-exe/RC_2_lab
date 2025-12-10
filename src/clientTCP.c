@@ -71,6 +71,26 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    // Mandar comando RETR para receber os dados
+    snprintf(cmd, sizeof(cmd), "RETR %s\r\n", url.path);
+    send_all(sockfd, cmd, strlen(cmd));
+    recv_ftp_response(sockfd, line, sizeof(line));
+    
+    // Fazer download do ficheiro
+    if (download_file(data_sock, url.file) != 0) {
+        fprintf(stderr, "Failed to download file\n");
+        close(data_sock);
+        close(sockfd);
+        return 1;
+    }
+
+    printf("File '%s' downloaded successfully!\n", url.file);
+
+    close(data_sock);
+
+    // Ler mensagem final do servidor
+    recv_ftp_response(sockfd, line, sizeof(line));
+
     close(sockfd);
     return 0;
 }
