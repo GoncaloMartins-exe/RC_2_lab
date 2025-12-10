@@ -14,6 +14,7 @@ typedef struct {
     char password[MAX_LENGTH];
     char host[MAX_LENGTH];
     char path[MAX_LENGTH];
+    char file[MAX_LENGTH];
 } ftp_url;
 
 // Da parse no url de input para depois processar e utilizar no envio da request

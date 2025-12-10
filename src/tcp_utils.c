@@ -130,3 +130,31 @@ int enter_passive_mode(int sockfd, char *ip_out, int *port_out) {
 
     return 0;
 }
+
+int download_file(int sockfd_data, const char *local_path) {
+    FILE *fp = fopen(local_path, "wb");
+    if (!fp) {
+        perror("fopen");
+        return -1;
+    }
+
+    char buffer[4096];
+    ssize_t n;
+
+    while ((n = recv(sockfd_data, buffer, sizeof(buffer), 0)) > 0) {
+        if (fwrite(buffer, 1, n, fp) != (size_t)n) {
+            perror("fwrite");
+            fclose(fp);
+            return -1;
+        }
+    }
+
+    if (n < 0) {
+        perror("recv");
+        fclose(fp);
+        return -1;
+    }
+
+    fclose(fp);
+    return 0;
+}

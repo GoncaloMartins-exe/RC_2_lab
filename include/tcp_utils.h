@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <fcntl.h>
+#include <errno.h>
 
 #define FTP_PORT 21
 
@@ -26,5 +28,8 @@ int recv_ftp_response(int sockfd, char *buf, size_t buflen);
 
 // Função que lê os valores h1,h2,h3,h4,p1,p2 e entra no modo Passive
 int enter_passive_mode(int sockfd, char *ip_out, int *port_out);
+
+// Fazer download de um ficheiro pela data socket
+int download_file(int sockfd_data, const char *local_path);
 
 #endif

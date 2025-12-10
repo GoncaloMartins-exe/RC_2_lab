@@ -10,6 +10,7 @@ int parse_ftp_url(const char *url, ftp_url *out) {
     strcpy(out->password, DEFAULT_PASS);
     out->host[0] = '\0';
     out->path[0] = '\0';
+    out->file[0] = '\0';
 
     const char *p = url + 6; //Da skip no "ftp://"
 
@@ -41,6 +42,7 @@ int parse_ftp_url(const char *url, ftp_url *out) {
     if (slash == NULL) {
         strcpy(out->host, p);
         strcpy(out->path, "");
+        strcpy(out->file, p);
         return 0;
     }
 
@@ -54,5 +56,12 @@ int parse_ftp_url(const char *url, ftp_url *out) {
     // Pegar o path (tudo dps do '/')
     strcpy(out->path, slash + 1);
     
+    // Pegar o nome do ficheiro (tudo dps do ultimo '/')
+    const char *last_slash = strrchr(out->path, '/');
+    if (last_slash) {
+        strcpy(out->file, last_slash + 1);
+    } else {
+        strcpy(out->file, out->path);
+    }
     return 0;
 }
